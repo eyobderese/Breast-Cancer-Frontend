@@ -4,7 +4,29 @@ import { uploadFile } from "../services/uploadService";
 import { AiOutlineFile } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
 
-function FileUpload({ file, setFile, setUploadProgress, setUploadComplete }) {
+function FileUpload() {
+  // State for managing the file, progress, and completion status
+  const [file, setFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploadComplete, setIsUploadComplete] = useState(false);
+
+  // Function to handle file upload with progress tracking
+  const handleFileUpload = async (selectedFile) => {
+    try {
+      await uploadFile(selectedFile, (progressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
+        setUploadProgress(percentCompleted);
+      });
+      setIsUploadComplete(true);
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("File upload failed. Please try again.");
+    }
+  };
+
+  // Handler for dropped files
   const onDrop = useCallback(
     (acceptedFiles) => {
       const selectedFile = acceptedFiles[0];
@@ -12,37 +34,21 @@ function FileUpload({ file, setFile, setUploadProgress, setUploadComplete }) {
         console.log("File selected:", selectedFile);
         setFile(selectedFile);
         setUploadProgress(0);
-        setUploadComplete(false);
+        setIsUploadComplete(false);
         handleFileUpload(selectedFile);
       } else {
-        alert("Please upload a PDF file.");
+        alert("Please upload a valid PDF file.");
       }
     },
-    [setFile, setUploadProgress, setUploadComplete]
+    [] // No dependencies needed as we directly set state
   );
 
+  // Setting up `useDropzone` with configuration options
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: "application/pdf",
+    accept: { "application/pdf": [".pdf"] },
     maxFiles: 1,
   });
-
-  const handleFileUpload = (selectedFile) => {
-    if (!selectedFile) return;
-
-    uploadFile(selectedFile, (progressEvent) => {
-      const percentCompleted = Math.round(
-        (progressEvent.loaded * 100) / progressEvent.total
-      );
-      setUploadProgress(percentCompleted);
-    })
-      .then(() => {
-        setUploadComplete(true);
-      })
-      .catch((error) => {
-        console.error("Upload error:", error);
-      });
-  };
 
   return (
     <div className="flex flex-col items-center">
@@ -55,12 +61,14 @@ function FileUpload({ file, setFile, setUploadProgress, setUploadComplete }) {
         }`}
       >
         <input {...getInputProps()} />
-        {file && setUploadComplete ? (
+
+        {file && isUploadComplete ? (
           <FaCheck className="text-gray-400 text-6xl mb-4" />
         ) : (
           <AiOutlineFile className="text-purple-400 text-6xl mb-4" />
         )}
-        {file && setUploadComplete ? (
+
+        {file && isUploadComplete ? (
           <p className="text-white font-semibold">Uploaded File: {file.name}</p>
         ) : (
           <>
@@ -74,6 +82,13 @@ function FileUpload({ file, setFile, setUploadProgress, setUploadComplete }) {
               Supported Format: PDF (10MB max)
             </p>
           </>
+        )}
+
+        {/* Display upload progress if file is being uploaded */}
+        {file && !isUploadComplete && (
+          <p className="text-gray-300 text-sm mt-2">
+            Uploading... {uploadProgress}%
+          </p>
         )}
       </div>
     </div>

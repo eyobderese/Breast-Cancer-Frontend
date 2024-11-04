@@ -1,10 +1,9 @@
-import axios from 'axios';
+import axiosInstance from "../api/api";
 
 export const uploadFile = (file, onUploadProgress) => {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
+  console.log("here ...");
 
-  return axios.post('/upload', formData, {
-    onUploadProgress,
-  });
+  return axiosInstance.post("/upload", formData);
 };

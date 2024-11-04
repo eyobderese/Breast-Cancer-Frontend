@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axiosInstance from "../api/api";
 
 export const searchQuery = (query, k) => {
-  return axios.post('/search', {
+  return axiosInstance.post("/search", {
     query,
-    k,
+    "top-k": k,
   });
 };
