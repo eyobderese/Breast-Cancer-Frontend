@@ -3,16 +3,13 @@ import FileUpload from "../components/FileUpload";
 import ProgressBar from "../components/ProgressBar";
 import SearchBar from "../components/SearchBar";
 import ResultsList from "../components/ResultsList";
+import WebScrape from "../components/WenScrape";
 
 function Home() {
-  const [file, setFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadComplete, setUploadComplete] = useState(false);
-  const [results, setResults] = useState([
-    "Search results will appear here. Use the search bar to find relevant content. Upload a PDF document to get started. ",
-    "Search results will appear here. Use the search bar to find relevant content. Upload a PDF document to get started. ",
-    "Search results will appear here. Use the search bar to find relevant content. Upload a PDF document to get started. ",
-  ]);
+  const [file, setFile] = useState(null);
+  const [results, setResults] = useState([]);
 
   return (
     <div className="flex flex-col items-center p-8 space-y-8 min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-orange-800">
@@ -32,11 +29,23 @@ function Home() {
       </div>
 
       {/* File Upload Component */}
-      <FileUpload
+      {/* <FileUpload
+        UploadProgress={uploadProgress}
+        setUploadProgress={setUploadProgress}
+        uploadComplete={uploadComplete}
+        setUploadComplete={setUploadComplete}
         file={file}
         setFile={setFile}
+      /> */}
+
+      {/*Web link Upload Component */}
+      <WebScrape
+        UploadProgress={uploadProgress}
         setUploadProgress={setUploadProgress}
+        uploadComplete={uploadComplete}
         setUploadComplete={setUploadComplete}
+        file={file}
+        setFile={setFile}
       />
 
       {/* Progress Bar */}

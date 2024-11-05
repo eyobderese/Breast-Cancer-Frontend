@@ -12,7 +12,8 @@ function SearchBar({ setResults }) {
     setIsLoading(true);
     searchQuery(query, kValue)
       .then((response) => {
-        setResults(response.data.results);
+        console.log(response.data.result);
+        setResults(response.data.result);
       })
       .catch((error) => {
         console.error("Search error:", error);

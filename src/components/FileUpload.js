@@ -4,22 +4,35 @@ import { uploadFile } from "../services/uploadService";
 import { AiOutlineFile } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
 
-function FileUpload() {
+function FileUpload({
+  uploadProgress,
+  setUploadProgress,
+  uploadComplete,
+  setUploadComplete,
+  file,
+  setFile,
+}) {
   // State for managing the file, progress, and completion status
-  const [file, setFile] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [isUploadComplete, setIsUploadComplete] = useState(false);
 
   // Function to handle file upload with progress tracking
   const handleFileUpload = async (selectedFile) => {
     try {
-      await uploadFile(selectedFile, (progressEvent) => {
-        const percentCompleted = Math.round(
-          (progressEvent.loaded * 100) / progressEvent.total
-        );
-        setUploadProgress(percentCompleted);
-      });
-      setIsUploadComplete(true);
+      // Create fake progress
+      const fakeProgressInterval = setInterval(() => {
+        setUploadProgress((prevProgress) => {
+          if (prevProgress >= 90) {
+            clearInterval(fakeProgressInterval);
+            return prevProgress;
+          }
+          return prevProgress + 10;
+        });
+      }, 500);
+
+      await uploadFile(selectedFile);
+
+      clearInterval(fakeProgressInterval);
+      setUploadComplete(true);
+      setUploadProgress(100);
     } catch (error) {
       console.error("Upload error:", error);
       alert("File upload failed. Please try again.");
@@ -34,7 +47,7 @@ function FileUpload() {
         console.log("File selected:", selectedFile);
         setFile(selectedFile);
         setUploadProgress(0);
-        setIsUploadComplete(false);
+        setUploadComplete(false);
         handleFileUpload(selectedFile);
       } else {
         alert("Please upload a valid PDF file.");
@@ -62,13 +75,13 @@ function FileUpload() {
       >
         <input {...getInputProps()} />
 
-        {file && isUploadComplete ? (
+        {file && uploadComplete ? (
           <FaCheck className="text-gray-400 text-6xl mb-4" />
         ) : (
           <AiOutlineFile className="text-purple-400 text-6xl mb-4" />
         )}
 
-        {file && isUploadComplete ? (
+        {file && uploadComplete ? (
           <p className="text-white font-semibold">Uploaded File: {file.name}</p>
         ) : (
           <>
@@ -85,7 +98,7 @@ function FileUpload() {
         )}
 
         {/* Display upload progress if file is being uploaded */}
-        {file && !isUploadComplete && (
+        {file && !uploadComplete && (
           <p className="text-gray-300 text-sm mt-2">
             Uploading... {uploadProgress}%
           </p>
