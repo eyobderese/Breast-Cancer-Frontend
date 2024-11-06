@@ -10,7 +10,7 @@ function ExpandableCard({ title, content }) {
   return (
     <div
       onClick={toggleExpanded}
-      className="border border-gray-300 rounded-md p-4 m-2 cursor-pointer transition-transform transform hover:scale-105 shadow-md"
+      className="border border-gray-300 rounded-md p-4 m-2 cursor-pointer transition-transform transform hover:scale-105 shadow-md "
       style={{ width: "500px" }} // Adjust the width as needed
     >
       <h2 className="text-xl font-bold mb-2">{title}</h2>

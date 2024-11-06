@@ -3,9 +3,7 @@ import { searchQuery } from "../services/searchService";
 import { HiOutlineSearch } from "react-icons/hi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-function SearchBar({ setResults }) {
-  const [query, setQuery] = useState("");
-  const [kValue, setKValue] = useState(1);
+function SearchBar({ setResults, query, setQuery, kValue, setKValue }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = () => {
