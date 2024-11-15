@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { uploadFile } from "../services/uploadService";
-import { AiOutlineFile } from "react-icons/ai";
+import { AiOutlineFileImage } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
 
 function FileUpload({
@@ -11,13 +11,12 @@ function FileUpload({
   setUploadComplete,
   file,
   setFile,
+  setResults,
 }) {
-  // State for managing the file, progress, and completion status
-
   // Function to handle file upload with progress tracking
   const handleFileUpload = async (selectedFile) => {
     try {
-      // Create fake progress
+      // Simulate upload progress
       const fakeProgressInterval = setInterval(() => {
         setUploadProgress((prevProgress) => {
           if (prevProgress >= 90) {
@@ -28,7 +27,9 @@ function FileUpload({
         });
       }, 500);
 
-      await uploadFile(selectedFile);
+      const response = await uploadFile(selectedFile);
+      console.log("Upload response:", response.data);
+      setResults(response.data);
 
       clearInterval(fakeProgressInterval);
       setUploadComplete(true);
@@ -43,14 +44,14 @@ function FileUpload({
   const onDrop = useCallback(
     (acceptedFiles) => {
       const selectedFile = acceptedFiles[0];
-      if (selectedFile && selectedFile.type === "application/pdf") {
+      if (selectedFile && selectedFile.type === "image/png") {
         console.log("File selected:", selectedFile);
         setFile(selectedFile);
         setUploadProgress(0);
         setUploadComplete(false);
         handleFileUpload(selectedFile);
       } else {
-        alert("Please upload a valid PDF file.");
+        alert("Please upload a valid PNG image.");
       }
     },
     [] // No dependencies needed as we directly set state
@@ -59,7 +60,7 @@ function FileUpload({
   // Setting up `useDropzone` with configuration options
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { "application/pdf": [".pdf"] },
+    accept: { "image/png": [".png"] },
     maxFiles: 1,
   });
 
@@ -69,7 +70,7 @@ function FileUpload({
         {...getRootProps()}
         className={`w-full h-48 flex flex-col items-center justify-center border-2 border-dashed rounded-lg cursor-pointer transition-colors p-10 m-10 ${
           isDragActive
-            ? "border-purple-500 bg-purple-900/20"
+            ? "border-green-500 bg-green-900/20"
             : "border-gray-500 bg-gray-800/30"
         }`}
       >
@@ -78,7 +79,7 @@ function FileUpload({
         {file && uploadComplete ? (
           <FaCheck className="text-gray-400 text-6xl mb-4" />
         ) : (
-          <AiOutlineFile className="text-purple-400 text-6xl mb-4" />
+          <AiOutlineFileImage className="text-green-400 text-6xl mb-4" />
         )}
 
         {file && uploadComplete ? (
@@ -86,13 +87,13 @@ function FileUpload({
         ) : (
           <>
             <p className="text-white">
-              <span className="text-purple-400 font-semibold cursor-pointer">
+              <span className="text-green-400 font-semibold cursor-pointer">
                 Click here
               </span>{" "}
-              to upload your PDF or drag and drop.
+              to upload your PNG image or drag and drop.
             </p>
             <p className="text-gray-400 text-sm mt-2">
-              Supported Format: PDF (10MB max)
+              Supported Format: PNG (10MB max)
             </p>
           </>
         )}
