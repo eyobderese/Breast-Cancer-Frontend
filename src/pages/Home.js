@@ -33,7 +33,7 @@ function Home() {
           "Detecting Cancer, Saving Lives"
         </p>
         <p className="text-md text-gray-300 max-w-lg">
-          Upload biopsy images to classify them as cancerous or non-cancerous.
+          Upload images to classify them as cancerous or non-cancerous.
           Our AI-powered system provides fast and reliable results to assist in
           early detection and treatment.
         </p>
